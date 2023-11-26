@@ -337,7 +337,7 @@ export default function Terasik() {
 											/>
 											{guru.nama_guru}
 										</label>
-										<div className="">Suara: {guru.terasik || 0}</div>
+										<div className="">Total Suara: {guru.terasik || 0}</div>
 									</div>
 								))}
 							</div>

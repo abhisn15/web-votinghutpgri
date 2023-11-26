@@ -91,7 +91,7 @@ const Drawer = styled(MuiDrawer, {
 	}),
 }));
 
-export default function Terasik() {
+export default function Terinspiratif() {
 	const [guruData, setGuruData] = useState([]);
 	const [selectedOption, setSelectedOption] = useState("");
 	const [nama_guru, setNama_guru] = useState("");

@@ -94,7 +94,7 @@ const Drawer = styled(MuiDrawer, {
 		"& .MuiDrawer-paper": closedMixin(theme),
 	}),
 }));
-export const EditUser = ({ selectedUser, handleCancel }) => {
+export const EditUser = ({ selectedUser, handleEdit, handleCancel }) => {
 	const [editedUsername, setEditedUsername] = React.useState(
 		selectedUser?.username || "",
 	);
@@ -113,13 +113,13 @@ export const EditUser = ({ selectedUser, handleCancel }) => {
 
 		try {
 			const response = await axios.put(
-				process.env.REACT_APP_API_EDIT,
+				`https://votinghutpgri.cloufee.com/api/user/${selectedUser.id}`,
 				{
 					username: editedUsername,
 					password: editedPassword,
 				},
 			);
-			console.log(response)
+			console.log(response);
 
 			// Assuming the response contains the updated user data
 			const updatedUser = response.data.user;
@@ -129,12 +129,6 @@ export const EditUser = ({ selectedUser, handleCancel }) => {
 		} catch (error) {
 			console.error("Error updating user data:", error);
 		}
-	};
-
-	const handleEdit = (updatedUser) => {
-		// Handle the updated user data, e.g., update state or trigger a callback
-		console.log("User updated:", updatedUser);
-		// You can add more logic based on your requirements
 	};
 
 	return (
@@ -223,7 +217,9 @@ export default function AkunTerdaftar() {
 const handleDelete = async (userId) => {
 	try {
 		// Make a DELETE request to the API endpoint to delete the user
-		await axios.delete(process.env.REACT_APP_API_DELETE);
+		await axios.delete(
+			`https://votinghutpgri.cloufee.com/api/destroy/${userId}`,
+		);
 
 		// Update the state to reflect the deleted user
 		setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));

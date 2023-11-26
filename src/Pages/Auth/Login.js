@@ -95,7 +95,7 @@ const handleRegister = () => {
 							src="../../assets/logo.png"
 							alt="logo"
 						/>
-						<h4 className="mb-12 mt-1 pb-1 text-xl font-semibold">SIGN UP</h4>
+						<h4 className="mb-12 mt-1 pb-1 text-xl font-semibold">LOG IN</h4>
 					</div>
 
 					<form>
