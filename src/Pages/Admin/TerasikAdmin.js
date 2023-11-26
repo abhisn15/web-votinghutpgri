@@ -17,6 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { blue, cyan } from "@mui/material/colors";
 import {
+	AccountCircleOutlined,
 	ChevronLeft,
 	ChevronRight,
 	Dashboard as DashboardIcon,
@@ -166,6 +167,10 @@ export default function TerasikAdmin() {
 		// Handle form submission
 
 	};
+
+		const handleAkun = () => {
+			navigate("/akun-terdaftar");
+		};
 	
 
 	return (
@@ -213,6 +218,23 @@ export default function TerasikAdmin() {
 							/>
 						</ListItemButton>
 					</ListItem>
+					<ListItem disablePadding onClick={handleAkun}>
+						<ListItemButton
+							sx={{
+								px: 2.5,
+							}}>
+							<ListItemIcon
+								sx={{
+									minWidth: 0,
+									mr: open ? 3 : "auto",
+									justifyContent: "center",
+								}}>
+								<AccountCircleOutlined />
+							</ListItemIcon>
+
+							<ListItemText primary="Account" sx={{ opacity: open ? 1 : 0 }} />
+						</ListItemButton>
+					</ListItem>
 					<ListItem disablePadding>
 						<ListItemButton onClick={handleLogout} sx={{ px: 2.5 }}>
 							<ListItemIcon
@@ -236,14 +258,12 @@ export default function TerasikAdmin() {
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
 				<div className="container mx-auto">
-							{guruData.map((guru) => (
-								<div className="flex" key={guru.id}>
-									<div className="w-[30%]">
-										{guru.nama_guru}
-									</div>
-									<div className="">Suara: { guru.terasik }</div>
-								</div>
-							))}
+					{guruData.map((guru) => (
+						<div className="flex" key={guru.id}>
+							<div className="w-[72%]">{guru.nama_guru}</div>
+							<div className="">Suara: {guru.terasik}</div>
+						</div>
+					))}
 					<button onClick={handleBack}>Kembali</button>
 				</div>
 			</Box>

@@ -317,7 +317,7 @@ export default function Terasik() {
 						<div className="radio">
 							{guruData.map((guru) => (
 								<div key={guru.id} className="flex">
-									<label className="w-[60%]">
+									<label className="w-[72%]">
 										<input
 											type="radio"
 											className="mr-2"
