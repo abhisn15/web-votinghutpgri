@@ -111,7 +111,7 @@ export default function Terkiller() {
 	const handleVote = async () => {
 		if (selectedGuru) {
 			try {
-				const response = await axios.post("http://192.168.1.7:8000/api/vote", {
+				const response = await axios.post(process.env.REACT_APP_API_VOTE, {
 					guruId: selectedGuru.id,
 					category: "terkiller",
 				});

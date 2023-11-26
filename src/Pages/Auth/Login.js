@@ -18,6 +18,9 @@ export default function Login() {
 		}
 	};
 
+	localStorage.removeItem("isUsername");
+
+
 	useEffect(() => {
 		const isRegister = localStorage.getItem("isRegister") === "true";
 		if (isRegister) {
@@ -36,10 +39,12 @@ export default function Login() {
 					password,
 				},
       );
+			
       
 			const responseData = response.data;
 			localStorage.setItem("token", responseData.authorization.token);
 			localStorage.setItem("user_id", responseData.user.id);
+			localStorage.setItem("isUsername", responseData.user.username);
 			localStorage.setItem("isAdmin", responseData.user.role === '0');
 			localStorage.setItem("isUser", responseData.user.role === '1');
 			localStorage.setItem("hasVoted", responseData.user.hasVoted);
