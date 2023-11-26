@@ -176,6 +176,7 @@ export const EditUser = ({ selectedUser, handleCancel }) => {
 
 
 export default function AkunTerdaftar() {
+	const [runningNumber, setRunningNumber] = React.useState(1);
 	const navigate = useNavigate();
 	const [showCategory, setShowCategory] = React.useState([]);
 	const [users, setUsers] = React.useState([]);
@@ -183,9 +184,9 @@ export default function AkunTerdaftar() {
 	const [selectedUser, setSelectedUser] = React.useState(null);
 	const [loading, setLoading] = React.useState(true);
 
-	const handleEdit = (user) => {
+	const handleEdit = (user, index) => {
 		// Set the selected user for editing
-		setSelectedUser(user);
+		setSelectedUser({ ...user, userNumber: index + 1 });
 		// Show the edit form
 		setShowEditForm(true);
 	};
@@ -258,6 +259,8 @@ const handleDelete = async (userId) => {
 	const handleAkun = () => {
 		navigate("/akun-terdaftar");
 	};
+
+
 
 	const handleKategori = (id) => {
 		switch (id) {
@@ -391,9 +394,9 @@ const handleDelete = async (userId) => {
 									</tr>
 								</thead>
 								<tbody>
-									{users.map((user) => (
+									{users.map((user, index) => (
 										<tr key={user.id}>
-											<td className="text-center">{user.id}</td>
+											<td className="text-center">{index + 1}</td>
 											<td className="text-center">{user.username}</td>
 											<td>
 												<button
