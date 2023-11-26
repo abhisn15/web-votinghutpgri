@@ -267,10 +267,6 @@ export default function DashboardAdmin() {
 				<DrawerHeader />
 				<div className="mb-10">
 					<h1 className="text-2xl font-[500] mb-4">Hallo, {username}</h1>
-					<h1 className="text-xl font-[400]">
-						Selamat Datang Di Situ Kami, Ayoo voting gurumu sesuai kategori apa
-						yang kamu vote!
-					</h1>
 				</div>
 				{loading ? (
 					<div className="flex items-center justify-center h-screen">
