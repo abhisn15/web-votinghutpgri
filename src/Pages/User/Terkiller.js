@@ -23,6 +23,7 @@ import {
 	Logout,
 } from "@mui/icons-material";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -101,6 +102,7 @@ export default function Terkiller() {
 	const [votes, setVotes] = useState({});
 	const [hasVoted, setHasVoted] = useState(false);
 	const [selectedGuru, setSelectedGuru] = useState(null);
+	const [loading, setLoading] = React.useState(true);
 
 	const onGuruChange = (guru) => {
 		setSelectedGuru(guru);
@@ -137,6 +139,8 @@ export default function Terkiller() {
 					hasVotedTerkiller: "1", // or '1', depending on the backend expectation
 				},
 			);
+				 setLoading(false);
+
 			if (selectedGuru) {
 				// Memanggil fungsi handleVote untuk melakukan vote
 				await handleVote();
@@ -177,6 +181,7 @@ export default function Terkiller() {
 				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
 				const responseData = response.data.guru;
 				setGuruData(responseData);
+				 setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -312,31 +317,37 @@ export default function Terkiller() {
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
 				<div className="container xl:mx-[150px]">
-					<form onSubmit={formSubmit}>
-						<div className="radio">
-							{guruData.map((guru) => (
-								<div key={guru.id} className="flex">
-									<label className="w-[72%]">
-										<input
-											type="radio"
-											className="mr-2"
-											value={selectedGuru ? selectedGuru.nama_guru : ""}
-											checked={selectedGuru && selectedGuru.id === guru.id}
-											onChange={() => onGuruChange(guru)}
-										/>
-										{guru.nama_guru}
-									</label>
-									<div className="">Suara: {guru.terkiller || 0}</div>
-								</div>
-							))}
+					{loading ? (
+						<div className="flex items-center justify-center h-screen">
+							<FaSpinner className="text-4xl animate-spin" />
 						</div>
-						<button
-							className="px-5 py-2 rounded-md text-white mt-5 mb-5 bg-blue-500"
-							type="submit"
-							disabled={hasVoted}>
-							{hasVoted ? "Sudah Memilih" : "Vote"}
-						</button>
-					</form>
+					) : (
+						<form onSubmit={formSubmit}>
+							<div className="radio">
+								{guruData.map((guru) => (
+									<div key={guru.id} className="flex">
+										<label className="w-[72%]">
+											<input
+												type="radio"
+												className="mr-2"
+												value={selectedGuru ? selectedGuru.nama_guru : ""}
+												checked={selectedGuru && selectedGuru.id === guru.id}
+												onChange={() => onGuruChange(guru)}
+											/>
+											{guru.nama_guru}
+										</label>
+										<div className="">Suara: {guru.terkiller || 0}</div>
+									</div>
+								))}
+							</div>
+							<button
+								className="px-5 py-2 rounded-md text-white mt-5 mb-5 bg-blue-500"
+								type="submit"
+								disabled={hasVoted}>
+								{hasVoted ? "Sudah Memilih" : "Vote"}
+							</button>
+						</form>
+					)}
 
 					<button
 						className="bg-black px-5 py-2 rounded-md text-white"

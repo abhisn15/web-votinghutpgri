@@ -23,6 +23,7 @@ import {
 	Logout,
 } from "@mui/icons-material";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -101,6 +102,7 @@ export default function Terasik() {
 	const [votes, setVotes] = useState({});
 	const [hasVoted, setHasVoted] = useState(false);
 	const [selectedGuru, setSelectedGuru] = useState(null);
+	const [loading, setLoading] = React.useState(true);
 
 	const onGuruChange = (guru) => {
 		setSelectedGuru(guru);
@@ -113,6 +115,8 @@ export default function Terasik() {
 					guruId: selectedGuru.id,
 					category: "terinspiratif",
 				});
+				 setLoading(false);
+
 
 				// Refresh data guru setelah vote
 
@@ -137,6 +141,8 @@ export default function Terasik() {
 					hasVotedTerinspiratif: "1", // or '1', depending on the backend expectation
 				},
 			);
+				 setLoading(false);
+
 			console.log(response);
 			if (selectedGuru) {
 				// Memanggil fungsi handleVote untuk melakukan vote
@@ -178,6 +184,8 @@ export default function Terasik() {
 				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
 				const responseData = response.data.guru;
 				setGuruData(responseData);
+				 setLoading(false);
+
 			} catch (error) {
 				console.error(error);
 			}
@@ -311,6 +319,11 @@ export default function Terasik() {
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
 				<div className="container xl:mx-[150px]">
+					{loading ? (
+						<div className="flex items-center justify-center h-screen">
+							<FaSpinner className="text-4xl animate-spin" />
+						</div>
+					) : 
 					<form onSubmit={formSubmit}>
 						<div className="radio">
 							{guruData.map((guru) => (
@@ -322,10 +335,10 @@ export default function Terasik() {
 											value={selectedGuru ? selectedGuru.nama_guru : ""}
 											checked={selectedGuru && selectedGuru.id === guru.id}
 											onChange={() => onGuruChange(guru)}
-										/>
+											/>
 										{guru.nama_guru}
 									</label>
-									<div className="">Suara: {guru.terasik || 0}</div>
+									<div className="">Suara: {guru.terinspiratif || 0}</div>
 								</div>
 							))}
 						</div>
@@ -336,6 +349,7 @@ export default function Terasik() {
 							{hasVoted ? "Sudah Memilih" : "Vote"}
 						</button>
 					</form>
+					}
 
 					<button
 						className="bg-black px-5 py-2 rounded-md text-white"

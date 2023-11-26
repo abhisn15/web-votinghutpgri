@@ -98,6 +98,8 @@ export default function TerasikAdmin() {
 	const color = blue[500];
 	const colorCyan = cyan[900];
 	const [buttonColor, setButtonColor] = useState("");
+	const [loading, setLoading] = React.useState(true);
+	
 	useEffect(() => {
 		setButtonColor(selectedOption ? "#2449EE" : "#B0B0B0");
 	}, [selectedOption]);

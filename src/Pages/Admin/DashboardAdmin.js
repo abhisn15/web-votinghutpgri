@@ -30,6 +30,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./DashboardAdmin";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -101,6 +102,7 @@ const Drawer = styled(MuiDrawer, {
 export default function DashboardAdmin() {
 	const navigate = useNavigate();
 	const [showCategory, setShowCategory] = React.useState([]);
+	const [loading, setLoading] = React.useState(true);
 
 	const handleLogout = () => {
 		// Hapus status login dan status admin dari sessionStorage
@@ -115,6 +117,7 @@ export default function DashboardAdmin() {
 				);
 				const responseData = response.data.category;
 				setShowCategory(responseData);
+				 setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -168,8 +171,6 @@ export default function DashboardAdmin() {
 				break;
 		}
 	};
-
-
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -271,6 +272,11 @@ export default function DashboardAdmin() {
 						yang kamu vote!
 					</h1>
 				</div>
+				{loading ? (
+					<div className="flex items-center justify-center h-screen">
+            <FaSpinner className="text-4xl animate-spin" />
+          </div>
+				) : 
 				<div className="flex flex-wrap justify-center items-center gap-10">
 					{showCategory.map((item) => (
 						<Card key={item.id} sx={{ maxWidth: 270 }}>
@@ -292,13 +298,14 @@ export default function DashboardAdmin() {
 										onClick={() => handleKategori(item.id)}
 										className="w-[400px]"
 										size="small">
-										Mulai Voting
+										Lihat Hasil Voting
 									</Button>
 								</CardActions>
 							</div>
 						</Card>
 					))}
 				</div>
+				}
 			</Box>
 		</Box>
 	);

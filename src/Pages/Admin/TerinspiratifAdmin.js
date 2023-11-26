@@ -97,7 +97,9 @@ export default function TerinspiratifAdmin() {
 	const [votedData, setVotedData] = useState("");
 	const color = blue[500];
 	const colorCyan = cyan[900];
-	const [buttonColor, setButtonColor] = useState("");
+  const [buttonColor, setButtonColor] = useState("");
+  const [loading, setLoading] = React.useState(true);
+  
 	useEffect(() => {
 		setButtonColor(selectedOption ? "#2449EE" : "#B0B0B0");
 	}, [selectedOption]);
@@ -128,7 +130,7 @@ export default function TerinspiratifAdmin() {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
-				const responseData = response.data.hasVoted;
+				const responseData = response.data.hasVotedTerinspiratif;
 				setVotedData(responseData);
 			} catch (error) {
 				console.error(error);

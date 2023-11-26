@@ -25,6 +25,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./DashboardAdmin";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -180,6 +181,7 @@ export default function AkunTerdaftar() {
 	const [users, setUsers] = React.useState([]);
 	const [showEditForm, setShowEditForm] = React.useState(false);
 	const [selectedUser, setSelectedUser] = React.useState(null);
+	const [loading, setLoading] = React.useState(true);
 
 	const handleEdit = (user) => {
 		// Set the selected user for editing
@@ -206,7 +208,10 @@ export default function AkunTerdaftar() {
 				const response = await axios.get("http://192.168.1.7:8000/api/user");
 				const responseData = response.data.user;
 				setUsers(responseData);
-			} catch (error) {
+				 setLoading(false);
+
+			}
+			catch (error) {
 				console.error("Error fetching user data:", error);
 			}
 		};
@@ -214,10 +219,17 @@ export default function AkunTerdaftar() {
 		fetchData();
 	}, []);
 
-	const handleDelete = (userId) => {
-		// Implement delete functionality based on the user ID
-		console.log(`Delete user with ID ${userId}`);
-	};
+const handleDelete = async (userId) => {
+	try {
+		// Make a DELETE request to the API endpoint to delete the user
+		await axios.delete(`http://192.168.1.7:8000/api/destroy/${userId}`);
+
+		// Update the state to reflect the deleted user
+		setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+	} catch (error) {
+		console.error("Error deleting user:", error);
+	}
+};
 
 	React.useEffect(() => {
 		const isAdmin = localStorage.getItem("isAdmin") === "true";
@@ -354,40 +366,54 @@ export default function AkunTerdaftar() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
-				<div>
-					{showEditForm ? (
-						// Render the EditUser component with the selected user and cancel edit function
-						<EditUser
-							selectedUser={selectedUser}
-							handleEdit={handleEdit}
-							handleCancel={handleCancelEdit}
-						/>
-					) : (
-						<table>
-							<thead>
-								<tr>
-									<th>Username</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								{users.map((user) => (
-									<tr key={user.id}>
-										<td>{user.username}</td>
-										<td>
-											<button onClick={() => handleEdit(user)} className="mr-2">
-												Edit
-											</button>
-											<button onClick={() => handleDelete(user.id)}>
-												Delete
-											</button>
-										</td>
+				{loading ? (
+					<div className="flex items-center justify-center h-screen">
+						<FaSpinner className="text-4xl animate-spin" />
+					</div>
+				) : (
+					<div>
+						{showEditForm ? (
+							// Render the EditUser component with the selected user and cancel edit function
+							<EditUser
+								selectedUser={selectedUser}
+								handleEdit={handleEdit}
+								handleCancel={handleCancelEdit}
+							/>
+						) : (
+							<table>
+								<thead>
+									<tr>
+										<th>Nomor</th>
+										<div className="ml-4">
+											<th>Username</th>
+										</div>
+										<th>Actions</th>
 									</tr>
-								))}
-							</tbody>
-						</table>
-					)}
-				</div>
+								</thead>
+								<tbody>
+									{users.map((user) => (
+										<tr key={user.id}>
+											<td className="text-center">{user.id}</td>
+											<td className="text-center">{user.username}</td>
+											<td>
+												<button
+													onClick={() => handleEdit(user)}
+													className="bg-blue-500 text-white px-3 py-2 rounded mr-2 mt-2">
+													Edit
+												</button>
+												<button
+													onClick={() => handleDelete(user.id)}
+													className="bg-red-500 text-white px-3 py-2 rounded mr-2 mt-2">
+													Delete
+												</button>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						)}
+					</div>
+				)}
 			</Box>
 		</Box>
 	);

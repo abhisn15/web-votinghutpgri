@@ -32,6 +32,7 @@ import {
 	Logout,
 } from "@mui/icons-material";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -105,6 +106,7 @@ export default function Dashboard() {
 	const color = blue[500];
 	const [showCategory, setShowCategory] = React.useState([]);
 	const navigate = useNavigate();
+	const [loading, setLoading] = React.useState(true);
 
 	const username = localStorage.getItem("isUsername");
 
@@ -137,6 +139,7 @@ export default function Dashboard() {
 				);
 				const responseData = response.data.category;
 				setShowCategory(responseData);
+				 setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -238,10 +241,16 @@ export default function Dashboard() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
+
 				<div className="mb-10">
 					<h1 className="text-2xl font-[500] mb-4">Hallo, { username }</h1>
 					<h1 className="text-xl font-[400]">Selamat Datang Di Situ Kami, Ayoo voting gurumu sesuai kategori apa yang kamu vote!</h1>
 				</div>
+				{loading ? (
+					<div className="flex items-center justify-center h-screen">
+						<FaSpinner className="text-4xl animate-spin" />
+					</div>
+				) : 
 				<div className="flex flex-wrap justify-center items-center gap-10">
 					{showCategory.map((item) => (
 						<Card key={item.id} sx={{ maxWidth: 270 }}>
@@ -251,7 +260,7 @@ export default function Dashboard() {
 								height="140"
 								image={item.img}
 								sx={{ height: 220 }}
-							/>
+								/>
 							<CardContent>
 								<Typography gutterBottom variant="p" component="div">
 									{item.category}
@@ -270,6 +279,7 @@ export default function Dashboard() {
 						</Card>
 					))}
 				</div>
+				}
 			</Box>
 		</Box>
 	);
