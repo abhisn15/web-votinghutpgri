@@ -113,7 +113,7 @@ export const EditUser = ({ selectedUser, handleCancel }) => {
 
 		try {
 			const response = await axios.put(
-				`http://192.168.1.7:8000/api/user/${selectedUser.id}`,
+				process.env.REACT_APP_API_EDIT,
 				{
 					username: editedUsername,
 					password: editedPassword,
@@ -206,7 +206,7 @@ export default function AkunTerdaftar() {
 		// Fetch user data from your API
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.7:8000/api/user");
+				const response = await axios.get(process.env.REACT_APP_API_USERS);
 				const responseData = response.data.user;
 				setUsers(responseData);
 				 setLoading(false);
@@ -223,7 +223,7 @@ export default function AkunTerdaftar() {
 const handleDelete = async (userId) => {
 	try {
 		// Make a DELETE request to the API endpoint to delete the user
-		await axios.delete(`http://192.168.1.7:8000/api/destroy/${userId}`);
+		await axios.delete(process.env.REACT_APP_API_DELETE);
 
 		// Update the state to reflect the deleted user
 		setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));

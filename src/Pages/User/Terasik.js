@@ -111,7 +111,7 @@ export default function Terasik() {
 	const handleVote = async () => {
 		if (selectedGuru) {
 			try {
-				const response = await axios.post("http://192.168.1.7:8000/api/vote", {
+				const response = await axios.post(process.env.REACT_APP_API_VOTE, {
 					guruId: selectedGuru.id,
 					category: "terasik",
 				});
@@ -135,7 +135,7 @@ export default function Terasik() {
 	const handleSubmit = async () => {
 		try {
 			const response = axios.post(
-				"http://192.168.1.7:8000/api/updateVoteStatus",
+				process.env.REACT_APP_API_VOTE_TERASIK,
 				{
 					userId: localStorage.getItem("user_id"),
 					hasVoted: "1", // or '1', depending on the backend expectation
@@ -181,7 +181,7 @@ export default function Terasik() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
+				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.guru;
 				setGuruData(responseData);
 				 setLoading(false);

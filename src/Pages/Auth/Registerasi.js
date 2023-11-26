@@ -27,7 +27,7 @@ export default function Registerasi() {
 
 	const handleRegisterClick = async () => {
 		try {
-			const response = await axios.post("http://192.168.1.7:8000/api/register", {
+			const response = await axios.post(process.env.REACT_APP_API_REGISTER, {
 				username,
 				email,
 				password,

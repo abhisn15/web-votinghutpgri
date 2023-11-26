@@ -99,7 +99,7 @@ export default function TerkillerAdmin() {
 	const colorCyan = cyan[900];
   const [buttonColor, setButtonColor] = useState("");
   const [loading, setLoading] = React.useState(true);
-  
+
 	useEffect(() => {
 		setButtonColor(selectedOption ? "#2449EE" : "#B0B0B0");
 	}, [selectedOption]);
@@ -115,7 +115,7 @@ export default function TerkillerAdmin() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
+				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.guru;
 				setGuruData(responseData);
 			} catch (error) {
@@ -129,7 +129,7 @@ export default function TerkillerAdmin() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
+				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.hasVotedTerkiller;
 				setVotedData(responseData);
 			} catch (error) {

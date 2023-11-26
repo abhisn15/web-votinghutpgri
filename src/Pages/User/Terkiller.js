@@ -133,7 +133,7 @@ export default function Terkiller() {
 	const handleSubmit = async () => {
 		try {
 			const response = axios.post(
-				"http://192.168.1.7:8000/api/updateVoteStatusTerkiller",
+								process.env.REACT_APP_API_VOTE_TERKILLER,
 				{
 					userId: localStorage.getItem("user_id"),
 					hasVotedTerkiller: "1", // or '1', depending on the backend expectation
@@ -178,7 +178,7 @@ export default function Terkiller() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
+				const response = await axios.get(process.env.REACT_APP_API_VOTE_GURU);
 				const responseData = response.data.guru;
 				setGuruData(responseData);
 				 setLoading(false);

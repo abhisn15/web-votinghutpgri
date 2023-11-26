@@ -30,7 +30,7 @@ export default function Login() {
 	const handleLoginClick = async () => {
 		try {
 			const response = await axios.post(
-				"http://192.168.1.7:8000/api/login",
+				process.env.REACT_APP_API_LOGIN,
 				{
 					username,
 					password,

@@ -33,7 +33,6 @@ export default function LoginChecked() {
 		"hasVotedTerinspiratif"
 	);
 
-
 	// Inside the useEffect block or where you check the user's authentication status
 
 	useEffect(() => {
@@ -67,7 +66,7 @@ export default function LoginChecked() {
 
 	const handleLoginClick = async () => {
 		try {
-			const response = await axios.post("http://192.168.1.7:8000/api/login", {
+			const response = await axios.post(process.env.REACT_APP_API_LOGIN, {
 				username,
 				password,
 			});
