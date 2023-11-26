@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -109,19 +109,17 @@ export default function Terasik() {
 	const handleVote = async () => {
 		if (selectedGuru) {
 			try {
-				const response = await axios.post("http://192.168.1.5:8000/api/vote", {
+				const response = await axios.post("http://192.168.1.7:8000/api/vote", {
 					guruId: selectedGuru.id,
 					category: "terasik",
 				});
-				console.log(response.data);
+				
 				// Refresh data guru setelah vote
-				fetchData();
 
 				// Set hasVoted to true
 				setHasVoted(true);
 
 				// Simpan informasi suara pengguna di penyimpanan lokal
-				localStorage.setItem("hasVoted", "true");
 			} catch (error) {
 				console.error(error);
 			}
@@ -130,29 +128,16 @@ export default function Terasik() {
 		}
 	};
 
-
-  
-  const fetchData = async () => {
-		try {
-			const response = await axios.get("http://192.168.1.5:8000/api/category");
-			const categories = response.data.category;
-
-			// Misalkan Anda ingin mengambil ID dari kategori pertama
-			const firstCategoryId = categories[0].id;
-
-			// Simpan ID ke dalam localStorage
-			localStorage.setItem("category_id", firstCategoryId);
-
-			console.log(firstCategoryId);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
-	fetchData();
-
 	const handleSubmit = async () => {
 		try {
+			const response = axios.post(
+				"http://192.168.1.7:8000/api/updateVoteStatus",
+				{
+					userId: localStorage.getItem("user_id"),
+					hasVoted: "1", // or '1', depending on the backend expectation
+				},
+			);
+			console.log(response);
 			if (selectedGuru) {
 				// Memanggil fungsi handleVote untuk melakukan vote
 				await handleVote();
@@ -160,7 +145,7 @@ export default function Terasik() {
 			} else {
 				alert("Pilih guru terlebih dahulu");
       }
-      localStorage.setItem("hasVoted", "true");
+      localStorage.setItem("hasVoted", "1");
 		} catch (error) {
 			console.error(error);
 		}
@@ -168,23 +153,31 @@ export default function Terasik() {
 
 	const navigate = useNavigate();
 
+	const hasAlerted = useRef(false);
+
 	useEffect(() => {
-    const isUser = localStorage.getItem("isUser") === "true";
-    const voted = localStorage.getItem("hasVoted") === "true";
+		const isUser = localStorage.getItem("isUser") === "true";
+		const voted = localStorage.getItem("hasVoted") === "1";
+
 		if (!isUser) {
 			navigate("/", { replace: true });
-    } else if (voted) {
-      navigate('/dashboard', {replace: true})
-    }
+		}
+
+		if (voted && !hasAlerted.current) {
+			navigate("/dashboard", { replace: true });
+			alert("Hayoo kamu sudah vote tidak boleh vote 2 kali yah:D");
+
+			// Set the state variable to true to indicate that the alert has been shown
+			hasAlerted.current = true;
+		}
 	}, [navigate]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.5:8000/api/getGuru");
+				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
 				const responseData = response.data.guru;
 				setGuruData(responseData);
-				console.log(response.data.guru);
 			} catch (error) {
 				console.error(error);
 			}
@@ -193,9 +186,6 @@ export default function Terasik() {
 		fetchData();
 	}, []);
 
-	const handleLogout = () => {
-		navigate("/", { replace: true });
-	};
 
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
@@ -206,6 +196,10 @@ export default function Terasik() {
 
 	const handleDrawerClose = () => {
 		setOpen(false);
+	};
+
+	const handleLogout = () => {
+		navigate("/login", { replace: true });
 	};
 
 	const handleBack = () => {
@@ -327,7 +321,7 @@ export default function Terasik() {
 										<input
 											type="radio"
 											className="mr-2"
-											value={guru.nama_guru}
+											value={selectedGuru ? selectedGuru.nama_guru : ""}
 											checked={selectedGuru && selectedGuru.id === guru.id}
 											onChange={() => onGuruChange(guru)}
 										/>

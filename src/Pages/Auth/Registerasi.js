@@ -13,25 +13,29 @@ export default function Registerasi() {
 	}, [username, email, password]);
 
 	const handleKeyPress = (e) => {
+		const isRegister = localStorage.getItem("isRegister") === "true";
 		if (e.key === "Enter") {
-			handleLoginClick();
+			handleRegisterClick();
 		}
   };
   
    	localStorage.removeItem("token");
 		localStorage.removeItem("isAdmin");
-		localStorage.removeItem("isUser");
+	localStorage.removeItem("isUser");
+	
 
 
-	const handleLoginClick = async () => {
+	const handleRegisterClick = async () => {
 		try {
-			const response = await axios.post("http://192.168.1.5:8000/api/register", {
+			const response = await axios.post("http://192.168.1.7:8000/api/register", {
 				username,
 				email,
 				password,
 			});
 
-			const responseData = response.data;
+			localStorage.setItem("isRegister", "true");
+			navigate("/login", { replace: true });
+			console.log("Registration successful!");
 
 				alert("Akun Anda Berhasil Teregistrasi!");
 		} catch (error) {
@@ -39,6 +43,15 @@ export default function Registerasi() {
 			alert("Harap Isi Dengan Benar Yaaa!");
 		}
 	};
+
+	useEffect(() => {
+		const isRegister = localStorage.getItem("isRegister") === "true";
+		if (isRegister) {
+			navigate("/login", { replace: true });
+		} else if (isRegister) {
+			navigate("/login", { replace: true });
+		}
+	}, [navigate]);
 
 	return (
 		<section className="gradient-form h-screen flex justify-center items-center bg-neutral-200 dark:bg-neutral-700">
@@ -102,9 +115,9 @@ export default function Registerasi() {
 
 						{/* Submit button */}
 						<div className="mb-1 pb-1 pt-1 text-center">
-							<Link to={handleLoginClick}>
+							<Link to={handleRegisterClick}>
 								<button
-									onClick={handleLoginClick}
+									onClick={handleRegisterClick}
 									className="mb-3 inline-block w-full rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_rgba(0,0,0,0.2)] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)]"
 									type="button"
 									data-te-ripple-init
@@ -112,7 +125,7 @@ export default function Registerasi() {
 									style={{
 										background: buttonColor,
 									}}>
-									Log in
+									Registerasi
 								</button>
 							</Link>
 						</div>

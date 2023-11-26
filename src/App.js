@@ -13,12 +13,14 @@ import HalamanError from "./Pages/HalamanError";
 import TerasikAdmin from "./Pages/Admin/TerasikAdmin";
 import TerkillerAdmin from "./Pages/Admin/TerkillerAdmin";
 import TerinspiratifAdmin from "./Pages/Admin/TerinspiratifAdmin";
+import LoginChecked from "./Pages/Auth/LoginChecked";
 
 function App() {
 	return (
 		<Router>
 			<Routes>
 				<Route path="/" element={<Login />} />
+				<Route path="/login" element={<LoginChecked />} />
 				<Route path="*" element={<HalamanError />} />
 				<Route path="/registerasi" element={<Registerasi />} />
 				<Route path="/akun-terdaftar" element={<AkunTerdaftar />} />

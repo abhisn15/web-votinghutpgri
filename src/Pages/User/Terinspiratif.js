@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -90,37 +90,92 @@ const Drawer = styled(MuiDrawer, {
 	}),
 }));
 
-export default function Terinspiratif() {
+export default function Terasik() {
 	const [guruData, setGuruData] = useState([]);
 	const [selectedOption, setSelectedOption] = useState("");
+	const [nama_guru, setNama_guru] = useState("");
+	const [terasik, setTerasik] = useState(0);
 	const color = blue[500];
 	const colorCyan = cyan[900];
 	const [buttonColor, setButtonColor] = useState("");
-	useEffect(() => {
-		setButtonColor(selectedOption ? "#2449EE" : "#B0B0B0");
-	}, [selectedOption]);
+	const [votes, setVotes] = useState({});
+	const [hasVoted, setHasVoted] = useState(false);
+	const [selectedGuru, setSelectedGuru] = useState(null);
 
-	const handleSubmit = () => {
+	const onGuruChange = (guru) => {
+		setSelectedGuru(guru);
+	};
+
+	const handleVote = async () => {
+		if (selectedGuru) {
+			try {
+				const response = await axios.post("http://192.168.1.7:8000/api/vote", {
+					guruId: selectedGuru.id,
+					category: "terinspiratif",
+				});
+
+				// Refresh data guru setelah vote
+
+				// Set hasVoted to true
+				setHasVoted(true);
+
+				// Simpan informasi suara pengguna di penyimpanan lokal
+			} catch (error) {
+				console.error(error);
+			}
+		} else {
+			alert("Pilih guru terlebih dahulu");
+		}
+	};
+
+	const handleSubmit = async () => {
 		try {
-			const response = axios.post("");
+			const response = axios.post(
+				"http://192.168.1.7:8000/api/updateVoteStatusTerinspiratif",
+				{
+					userId: localStorage.getItem("user_id"),
+					hasVotedTerinspiratif: "1", // or '1', depending on the backend expectation
+				},
+			);
+			console.log(response);
+			if (selectedGuru) {
+				// Memanggil fungsi handleVote untuk melakukan vote
+				await handleVote();
+				setHasVoted(true);
+			} else {
+				alert("Pilih guru terlebih dahulu");
+			}
+			localStorage.setItem("hasVotedTerinspiratif", "1");
 		} catch (error) {
 			console.error(error);
-			alert("Pilihlah salah satu siapa guru terasikmu!");
 		}
 	};
 
 	const navigate = useNavigate();
+
+	const hasAlerted = useRef(false);
+
 	useEffect(() => {
 		const isUser = localStorage.getItem("isUser") === "true";
+		const voted = localStorage.getItem("hasVotedTerinspiratif") === "1";
+
 		if (!isUser) {
 			navigate("/", { replace: true });
+		}
+
+		if (voted && !hasAlerted.current) {
+			navigate("/dashboard", { replace: true });
+			alert("Hayoo kamu sudah vote tidak boleh vote 2 kali yah:D");
+
+			// Set the state variable to true to indicate that the alert has been shown
+			hasAlerted.current = true;
 		}
 	}, [navigate]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.5:8000/api/getguru");
+				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
 				const responseData = response.data.guru;
 				setGuruData(responseData);
 			} catch (error) {
@@ -130,10 +185,6 @@ export default function Terinspiratif() {
 
 		fetchData();
 	}, []);
-
-	const handleLogout = () => {
-		navigate("/", { replace: true });
-	};
 
 	const theme = useTheme();
 	const [open, setOpen] = useState(false);
@@ -150,13 +201,46 @@ export default function Terinspiratif() {
 		navigate("/dashboard");
 	};
 
-	const onValueChange = (event) => {
-		setSelectedOption(event.target.value);
-	};
-
 	const formSubmit = (event) => {
 		event.preventDefault();
-		// Handle form submission
+
+		if (!hasVoted) {
+			if (selectedGuru) {
+				const newSelectedOption = selectedGuru.nama_guru;
+
+				setVotes((prevVotes) => {
+					const updatedVotes = { ...prevVotes };
+
+					Object.keys(updatedVotes).forEach((option) => {
+						if (option !== newSelectedOption) {
+							updatedVotes[option] = 0;
+						}
+					});
+
+					updatedVotes[newSelectedOption] =
+						(updatedVotes[newSelectedOption] || 0) + 1;
+
+					return updatedVotes;
+				});
+
+				// Set hasVoted to true
+				setHasVoted(true);
+
+				// Simpan informasi suara pengguna di penyimpanan lokal
+				localStorage.setItem("hasVotedTerinspiratif", "1");
+
+				// Perform other actions on form submission
+				handleSubmit();
+			} else {
+				alert("Pilih guru terlebih dahulu");
+			}
+		} else {
+			alert("Anda sudah memberikan suara!");
+		}
+	};
+
+	const handleLogout = () => {
+		navigate("/login", { replace: true });
 	};
 
 	return (
@@ -226,35 +310,38 @@ export default function Terinspiratif() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
-				<div className="container mx-auto">
+				<div className="container xl:mx-[150px]">
 					<form onSubmit={formSubmit}>
 						<div className="radio">
 							{guruData.map((guru) => (
-								<div key={guru.id}>
-									<label>
+								<div key={guru.id} className="flex">
+									<label className="w-[60%]">
 										<input
 											type="radio"
 											className="mr-2"
-											value={guru.nama_guru}
-											checked={selectedOption === guru.nama_guru}
-											onChange={onValueChange}
+											value={selectedGuru ? selectedGuru.nama_guru : ""}
+											checked={selectedGuru && selectedGuru.id === guru.id}
+											onChange={() => onGuruChange(guru)}
 										/>
 										{guru.nama_guru}
 									</label>
+									<div className="">Suara: {guru.terasik || 0}</div>
 								</div>
 							))}
 						</div>
-						<div>Selected option is : {selectedOption}</div>
 						<button
-							className="px-5 py-2 text-white"
+							className="px-5 py-2 rounded-md text-white mt-5 mb-5 bg-blue-500"
 							type="submit"
-							style={{
-								background: buttonColor,
-							}}>
-							Submit
+							disabled={hasVoted}>
+							{hasVoted ? "Sudah Memilih" : "Vote"}
 						</button>
 					</form>
-					<button onClick={handleBack}>Kembali</button>
+
+					<button
+						className="bg-black px-5 py-2 rounded-md text-white"
+						onClick={handleBack}>
+						Kembali
+					</button>
 				</div>
 			</Box>
 		</Box>

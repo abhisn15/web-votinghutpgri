@@ -23,9 +23,12 @@ import {
 	Logout,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import Dashboard from "./DashboardAdmin";
+import axios from "axios";
 
 const drawerWidth = 240;
 
+// Use theme.spacing instead of hardcoding values
 const openedMixin = (theme) => ({
 	width: drawerWidth,
 	transition: theme.transitions.create("width", {
@@ -90,14 +93,138 @@ const Drawer = styled(MuiDrawer, {
 		"& .MuiDrawer-paper": closedMixin(theme),
 	}),
 }));
+export const EditUser = ({ selectedUser, handleCancel }) => {
+	const [editedUsername, setEditedUsername] = React.useState(
+		selectedUser?.username || "",
+	);
+	const [editedPassword, setEditedPassword] = React.useState("");
+
+	const handleUsernameChange = (e) => {
+		setEditedUsername(e.target.value);
+	};
+
+	const handlePasswordChange = (e) => {
+		setEditedPassword(e.target.value);
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		try {
+			const response = await axios.put(
+				`http://192.168.1.7:8000/api/user/${selectedUser.id}`,
+				{
+					username: editedUsername,
+					password: editedPassword,
+				},
+			);
+			console.log(response)
+
+			// Assuming the response contains the updated user data
+			const updatedUser = response.data.user;
+
+			// Call the handleEdit function with the updated user data
+			handleEdit(updatedUser);
+		} catch (error) {
+			console.error("Error updating user data:", error);
+		}
+	};
+
+	const handleEdit = (updatedUser) => {
+		// Handle the updated user data, e.g., update state or trigger a callback
+		console.log("User updated:", updatedUser);
+		// You can add more logic based on your requirements
+	};
+
+	return (
+		<div>
+			<h2>Edit User</h2>
+			<form onSubmit={handleSubmit}>
+				<label>
+					Username:
+					<input
+						type="text"
+						className="border ml-2 rounded-md border-black mr-2"
+						value={editedUsername}
+						onChange={handleUsernameChange}
+					/>
+				</label>
+				<div className="py-2">
+					<label>
+						Password:
+						<input
+							className="border ml-2 rounded-md border-black"
+							type="password"
+							value={editedPassword}
+							onChange={handlePasswordChange}
+						/>
+					</label>
+				</div>
+				<div className="">
+					<button type="submit" className="mr-4">
+						Save
+					</button>
+					<button type="button" onClick={handleCancel}>
+						Cancel
+					</button>
+				</div>
+			</form>
+		</div>
+	);
+};
+
 
 export default function AkunTerdaftar() {
 	const navigate = useNavigate();
+	const [showCategory, setShowCategory] = React.useState([]);
+	const [users, setUsers] = React.useState([]);
+	const [showEditForm, setShowEditForm] = React.useState(false);
+	const [selectedUser, setSelectedUser] = React.useState(null);
+
+	const handleEdit = (user) => {
+		// Set the selected user for editing
+		setSelectedUser(user);
+		// Show the edit form
+		setShowEditForm(true);
+	};
+
+	const handleCancelEdit = () => {
+		// Reset the selected user and hide the edit form
+		setSelectedUser(null);
+		setShowEditForm(false);
+	};
 
 	const handleLogout = () => {
 		// Hapus status login dan status admin dari sessionStorage
 		navigate("/", { replace: true });
 	};
+
+	React.useEffect(() => {
+		// Fetch user data from your API
+		const fetchData = async () => {
+			try {
+				const response = await axios.get("http://192.168.1.7:8000/api/user");
+				const responseData = response.data.user;
+				setUsers(responseData);
+			} catch (error) {
+				console.error("Error fetching user data:", error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const handleDelete = (userId) => {
+		// Implement delete functionality based on the user ID
+		console.log(`Delete user with ID ${userId}`);
+	};
+
+	React.useEffect(() => {
+		const isAdmin = localStorage.getItem("isAdmin") === "true";
+		if (!isAdmin) {
+			navigate("/login", { replace: true });
+		}
+	}, [navigate]);
 
 	const color = blue[500];
 
@@ -114,10 +241,26 @@ export default function AkunTerdaftar() {
 
 	const handleDashboard = () => {
 		navigate("/dashboard-admin");
-  };
-  
+	};
+
 	const handleAkun = () => {
 		navigate("/akun-terdaftar");
+	};
+
+	const handleKategori = (id) => {
+		switch (id) {
+			case 1:
+				navigate("/dashboard/guru-terasik-admin");
+				break;
+			case 2:
+				navigate("/dashboard/guru-terkiller-admin");
+				break;
+			case 3:
+				navigate("/dashboard/guru-terinspiratif-admin");
+				break;
+			default:
+				break;
+		}
 	};
 
 	return (
@@ -137,7 +280,7 @@ export default function AkunTerdaftar() {
 						<MenuIcon />
 					</IconButton>
 					<Typography variant="h6" noWrap component="div">
-						FWC TECH
+						Osis SMK Negeri 40
 					</Typography>
 				</Toolbar>
 			</AppBar>
@@ -162,7 +305,6 @@ export default function AkunTerdaftar() {
 								}}>
 								<DashboardIcon />
 							</ListItemIcon>
-
 							<ListItemText
 								primary="Dashboard"
 								sx={{ opacity: open ? 1 : 0 }}
@@ -182,7 +324,6 @@ export default function AkunTerdaftar() {
 								}}>
 								<AccountCircleOutlined sx={{ color: color }} />
 							</ListItemIcon>
-
 							<ListItemText primary="Account" sx={{ opacity: open ? 1 : 0 }} />
 						</ListItemButton>
 					</ListItem>
@@ -207,14 +348,46 @@ export default function AkunTerdaftar() {
 						primary="Created By Abhi Surya Nugroho"
 						sx={{ textAlign: "center", opacity: open ? 1 : 0 }}
 					/>
-
 					{/* Other list items */}
 				</List>
 				<Divider />
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
-				<div>INI HALAMAN AKUN YANG TERDAFTAR</div>
+				<div>
+					{showEditForm ? (
+						// Render the EditUser component with the selected user and cancel edit function
+						<EditUser
+							selectedUser={selectedUser}
+							handleEdit={handleEdit}
+							handleCancel={handleCancelEdit}
+						/>
+					) : (
+						<table>
+							<thead>
+								<tr>
+									<th>Username</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{users.map((user) => (
+									<tr key={user.id}>
+										<td>{user.username}</td>
+										<td>
+											<button onClick={() => handleEdit(user)} className="mr-2">
+												Edit
+											</button>
+											<button onClick={() => handleDelete(user.id)}>
+												Delete
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					)}
+				</div>
 			</Box>
 		</Box>
 	);

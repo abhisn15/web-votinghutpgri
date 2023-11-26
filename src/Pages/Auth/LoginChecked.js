@@ -2,12 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function LoginChecked() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [buttonColor, setButtonColor] = useState("");
 	const [hasVoted, setHasVoted] = useState("");
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 	useEffect(() => {
 		setButtonColor(username && password ? "#2449EE" : "#B0B0B0");
 	}, [username, password]);
@@ -18,30 +18,66 @@ export default function Login() {
 		}
 	};
 
+	localStorage.setItem("isUser", 'true');
+	localStorage.removeItem("user_id");
+	localStorage.removeItem("isAdmin");
+	localStorage.removeItem("isUser");
+	localStorage.removeItem("user_id");
+	localStorage.removeItem("category_id");
+	localStorage.removeItem("isUsername");
+	localStorage.removeItem("hasVoted");
+	localStorage.removeItem(
+		"hasVotedTerkiller"
+	);
+	localStorage.removeItem(
+		"hasVotedTerinspiratif"
+	);
+
+
+	// Inside the useEffect block or where you check the user's authentication status
+
 	useEffect(() => {
-		const isRegister = localStorage.getItem("isRegister") === "true";
-		if (isRegister) {
-			navigate("/login", { replace: true });
-		} else if (isRegister) {
-			navigate("/dashboard", { replace: true });
+		// Redirect to login if user tries to navigate to '/'
+		const handleRedirect = () => {
+			const currentPath = window.location.pathname;
+
+			if (currentPath === "/" || currentPath === "") {
+				navigate("/login");
+			}
+		};
+
+		handleRedirect();
+
+		// Check if user is registered
+		const isRegistered = localStorage.getItem("isRegister") === "true";
+
+		// Check the user's role directly from localStorage
+		const isUser = localStorage.getItem("isUser") === "true";
+		const isAdmin = localStorage.getItem("isAdmin") === "true";
+
+		// Redirect to appropriate page based on registration status and user role
+		if (isRegistered) {
+			if (isAdmin) {
+				navigate("/dashboard-admin");
+			} else if (isUser) {
+				navigate("/dashboard");
+			}
 		}
 	}, [navigate]);
-	
+
 	const handleLoginClick = async () => {
 		try {
-			const response = await axios.post(
-				"http://192.168.1.7:8000/api/login",
-				{
-					username,
-					password,
-				},
-      );
-      
+			const response = await axios.post("http://192.168.1.7:8000/api/login", {
+				username,
+				password,
+			});
+
 			const responseData = response.data;
 			localStorage.setItem("token", responseData.authorization.token);
 			localStorage.setItem("user_id", responseData.user.id);
-			localStorage.setItem("isAdmin", responseData.user.role === '0');
-			localStorage.setItem("isUser", responseData.user.role === '1');
+			localStorage.setItem("isUsername", responseData.user.username);
+			localStorage.setItem("isAdmin", responseData.user.role === "0");
+			localStorage.setItem("isUser", responseData.user.role === "1");
 			localStorage.setItem("hasVoted", responseData.user.hasVoted);
 			localStorage.setItem(
 				"hasVotedTerkiller",
@@ -53,12 +89,11 @@ export default function Login() {
 			);
 
 			if (responseData.authorization && responseData.authorization.token) {
-
 				if (responseData.user.role === "0") {
 					navigate("/dashboard-admin");
-        } else {
-					navigate('/dashboard')
-        }
+				} else {
+					navigate("/dashboard");
+				}
 
 				alert("Login berhasil!");
 			}
@@ -68,11 +103,6 @@ export default function Login() {
 		}
 	};
 
-const handleRegister = () => {
-	localStorage.setItem("isRegister", "false");
-	navigate("/registerasi", { replace: true });
-};
-
 	return (
 		<section className="gradient-form h-screen flex justify-center items-center bg-neutral-200 dark:bg-neutral-700">
 			<img
@@ -81,7 +111,7 @@ const handleRegister = () => {
 				alt="logo"
 			/>
 			{/* Left column container*/}
-			<div className="absolute rounded-xl bg-neutral-800 text-white px-4 max-[640px]:px-10 max-[640px]:pt-5 max-[640px]:pb-10 sm:px-20 sm:pt-10 md:pt-0 md:px-10 lg:w-6/12">
+			<div className="absolute rounded-xl bg-neutral-800 text-white px-4 max-[640px]:px-10 max-[640px]:pt-5 max-[768px]:pb-10 sm:px-20 sm:pt-10 md:pt-0 md:px-10 lg:w-6/12">
 				<div className="md:mx-6 md:p-12">
 					{/* Logo */}
 					<div className="text-center">
@@ -136,14 +166,6 @@ const handleRegister = () => {
 									Log in
 								</button>
 							</Link>
-						</div>
-						<div className=" flex flex-col items-center pb-12">
-							<p>Kamu Tidak Punya Akun?</p>
-							<button
-								className="text-blue-500 underline"
-								onClick={handleRegister}>
-								Registerasi
-							</button>
 						</div>
 
 						{/* Register button */}

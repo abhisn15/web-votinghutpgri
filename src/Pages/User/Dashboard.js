@@ -99,23 +99,21 @@ const Drawer = styled(MuiDrawer, {
 		"& .MuiDrawer-paper": closedMixin(theme),
 	}),
 }));
+localStorage.getItem("isUser");
 
 export default function Dashboard() {
-  const color = blue[500];
-  const [showCategory, setShowCategory] = React.useState([])
+	const color = blue[500];
+	const [showCategory, setShowCategory] = React.useState([]);
 	const navigate = useNavigate();
 
-	const handleLogout = () => {
-		// Hapus status login dan status admin dari sessionStorage
-		navigate("/", { replace: true });
-  };
-  
-	React.useEffect(() => {
-		const isUser = localStorage.getItem('isUser') === 'true'
+	const username = localStorage.getItem("isUsername");
 
-    if (!isUser) {
+	React.useEffect(() => {
+		const isUser = localStorage.getItem("isUser") === "true";
+
+		if (!isUser) {
 			navigate("/", { replace: true });
-    } 
+		}
 	}, [navigate]);
 
 	const theme = useTheme();
@@ -127,39 +125,46 @@ export default function Dashboard() {
 
 	const handleDrawerClose = () => {
 		setOpen(false);
-  };
+	};
 
-		React.useEffect(() => {
-			const fetchData = async () => {
-				try {
-					const response = await axios.get(
-						"http://192.168.1.5:8000/api/category",
-					);
-					const responseData = response.data.category;
-					setShowCategory(responseData);
-				} catch (error) {
-					console.error(error);
-				}
-			};
+	// Check if the user is logged in as a regular user
 
-			fetchData();
-		}, []);
-
-		const handleKategori = (id) => {
-			switch (id) {
-				case 1:
-					navigate("/dashboard/guru-terasik");
-					break;
-				case 2:
-					navigate("/dashboard/guru-terkiller");
-					break;
-				case 3:
-					navigate("/dashboard/guru-terinspiratif");
-					break;
-				default:
-					break;
+	React.useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await axios.get(
+					"http://192.168.1.7:8000/api/category",
+				);
+				const responseData = response.data.category;
+				setShowCategory(responseData);
+			} catch (error) {
+				console.error(error);
 			}
 		};
+
+		fetchData();
+	}, []);
+
+
+	const handleKategori = (id) => {
+		switch (id) {
+			case 1:
+				navigate("/dashboard/guru-terasik");
+				break;
+			case 2:
+				navigate("/dashboard/guru-terkiller");
+				break;
+			case 3:
+				navigate("/dashboard/guru-terinspiratif");
+				break;
+			default:
+				break;
+		}
+	};
+
+	const handleLogout = () => {
+		navigate("/login", { replace: true });
+	};
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -211,11 +216,7 @@ export default function Dashboard() {
 						</ListItemButton>
 					</ListItem>
 					<ListItem disablePadding>
-						<ListItemButton
-							onClick={handleLogout}
-							sx={{
-								px: 2.5,
-							}}>
+						<ListItemButton onClick={handleLogout} sx={{ px: 2.5 }}>
 							<ListItemIcon
 								sx={{
 									minWidth: 0,
@@ -237,6 +238,10 @@ export default function Dashboard() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
+				<div className="mb-10">
+					<h1 className="text-2xl font-[500] mb-4">Hallo, { username }</h1>
+					<h1 className="text-xl font-[400]">Selamat Datang Di Situ Kami, Ayoo voting gurumu sesuai kategori apa yang kamu vote!</h1>
+				</div>
 				<div className="flex flex-wrap justify-center items-center gap-10">
 					{showCategory.map((item) => (
 						<Card key={item.id} sx={{ maxWidth: 270 }}>
@@ -244,8 +249,8 @@ export default function Dashboard() {
 								component="img"
 								alt={item.guru}
 								height="140"
-                image={item.img}
-                sx={{ height: 220 }}
+								image={item.img}
+								sx={{ height: 220 }}
 							/>
 							<CardContent>
 								<Typography gutterBottom variant="p" component="div">

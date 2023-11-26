@@ -93,6 +93,7 @@ const Drawer = styled(MuiDrawer, {
 export default function TerasikAdmin() {
 	const [guruData, setGuruData] = useState([]);
 	const [selectedOption, setSelectedOption] = useState("");
+	const [votedData, setVotedData] = useState("");
 	const color = blue[500];
 	const colorCyan = cyan[900];
 	const [buttonColor, setButtonColor] = useState("");
@@ -111,9 +112,23 @@ export default function TerasikAdmin() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get("http://192.168.1.5:8000/api/getguru");
+				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
 				const responseData = response.data.guru;
 				setGuruData(responseData);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await axios.get("http://192.168.1.7:8000/api/getGuru");
+				const responseData = response.data.hasVoted;
+				setVotedData(responseData);
 			} catch (error) {
 				console.error(error);
 			}
@@ -151,6 +166,7 @@ export default function TerasikAdmin() {
 		// Handle form submission
 
 	};
+	
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -225,7 +241,7 @@ export default function TerasikAdmin() {
 									<div className="w-[30%]">
 										{guru.nama_guru}
 									</div>
-										<div className="">Suara: </div>
+									<div className="">Suara: { guru.terasik }</div>
 								</div>
 							))}
 					<button onClick={handleBack}>Kembali</button>

@@ -100,20 +100,35 @@ const Drawer = styled(MuiDrawer, {
 
 export default function DashboardAdmin() {
 	const navigate = useNavigate();
-  const [showCategory, setShowCategory] = React.useState([]);
+	const [showCategory, setShowCategory] = React.useState([]);
 
 	const handleLogout = () => {
 		// Hapus status login dan status admin dari sessionStorage
 		navigate("/", { replace: true });
 	};
 
-	    React.useEffect(() => {
-				const isAdmin =
-					localStorage.getItem("isAdmin") === 'true'
-				if (!isAdmin) {
-					navigate("/", { replace: true });
-				}
-			}, [navigate]);
+	React.useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await axios.get(
+					"http://192.168.1.7:8000/api/category",
+				);
+				const responseData = response.data.category;
+				setShowCategory(responseData);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	React.useEffect(() => {
+		const isAdmin = localStorage.getItem("isAdmin") === "true";
+		if (!isAdmin) {
+			navigate("/", { replace: true });
+		}
+	}, [navigate]);
 
 	const color = blue[500];
 
@@ -153,21 +168,6 @@ export default function DashboardAdmin() {
 	};
 
 
-	React.useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await axios.get(
-					"http://192.168.1.5:8000/api/category",
-				);
-				const responseData = response.data.category;
-				setShowCategory(responseData);
-			} catch (error) {
-				console.error(error);
-			}
-		};
-
-		fetchData();
-	}, []);
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -216,6 +216,23 @@ export default function DashboardAdmin() {
 								primary="Dashboard"
 								sx={{ opacity: open ? 1 : 0 }}
 							/>
+						</ListItemButton>
+					</ListItem>
+					<ListItem disablePadding onClick={handleAkun}>
+						<ListItemButton
+							sx={{
+								px: 2.5,
+							}}>
+							<ListItemIcon
+								sx={{
+									minWidth: 0,
+									mr: open ? 3 : "auto",
+									justifyContent: "center",
+								}}>
+								<AccountCircleOutlined />
+							</ListItemIcon>
+
+							<ListItemText primary="Account" sx={{ opacity: open ? 1 : 0 }} />
 						</ListItemButton>
 					</ListItem>
 					<ListItem disablePadding>
