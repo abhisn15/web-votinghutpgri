@@ -116,10 +116,10 @@ export default function Terkiller() {
 					category: "terkiller",
 				});
 				// Refresh data guru setelah vote
+				setLoading(false);
 
 				// Set hasVoted to true
 				setHasVoted(true);
-				setLoading(false);
 
 
 				// Simpan informasi suara pengguna di penyimpanan lokal
@@ -180,7 +180,7 @@ export default function Terkiller() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await axios.get(process.env.REACT_APP_API_VOTE_GURU);
+				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.guru;
 				setGuruData(responseData);
 				 setLoading(false);
