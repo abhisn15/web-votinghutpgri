@@ -119,6 +119,8 @@ export default function Terkiller() {
 
 				// Set hasVoted to true
 				setHasVoted(true);
+				setLoading(false);
+
 
 				// Simpan informasi suara pengguna di penyimpanan lokal
 				localStorage.setItem("hasVotedTerkiller", '1');

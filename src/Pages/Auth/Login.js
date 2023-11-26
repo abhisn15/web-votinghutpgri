@@ -54,7 +54,7 @@ export default function Login() {
 			);
 			localStorage.setItem(
 				"hasVotedTerinspiratif",
-				responseData.user.hasVotedTerkiller,
+				responseData.user.hasVotedTerinspiratif,
 			);
 
 			if (responseData.authorization && responseData.authorization.token) {
