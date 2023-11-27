@@ -370,7 +370,7 @@ const handleDelete = async (userId) => {
 						<FaSpinner className="text-4xl animate-spin" />
 					</div>
 				) : (
-					<div>
+					<div className="flex justify-start text-center max-[438px]:text-sm max-[400px]:text-[12px] max-[360px]:text-[10px] max-[325px]:text-[8px]">
 						{showEditForm ? (
 							// Render the EditUser component with the selected user and cancel edit function
 							<EditUser
@@ -383,26 +383,24 @@ const handleDelete = async (userId) => {
 								<thead>
 									<tr>
 										<th>Nomor</th>
-										<div className="ml-4">
 											<th>Username</th>
-										</div>
 										<th>Actions</th>
 									</tr>
 								</thead>
 								<tbody>
 									{users.map((user, index) => (
 										<tr key={user.id}>
-											<td className="text-center">{index + 1}</td>
-											<td className="text-center">{user.username}</td>
+											<td className="">{index + 1}</td>
+											<td className="">{user.username}</td>
 											<td>
 												<button
 													onClick={() => handleEdit(user)}
-													className="bg-blue-500 text-white px-3 py-2 rounded mr-2 mt-2">
+													className="bg-blue-500 text-white px-2 py-1 rounded mx-2 mt-2">
 													Edit
 												</button>
 												<button
 													onClick={() => handleDelete(user.id)}
-													className="bg-red-500 text-white px-3 py-2 rounded mr-2 mt-2">
+													className="bg-red-500 text-white px-2 py-1 rounded mt-2">
 													Delete
 												</button>
 											</td>

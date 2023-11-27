@@ -24,6 +24,7 @@ import {
 	Logout,
 } from "@mui/icons-material";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -118,6 +119,7 @@ export default function TerasikAdmin() {
 				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.guru;
 				setGuruData(responseData);
+				setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -132,6 +134,7 @@ export default function TerasikAdmin() {
 				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.hasVoted;
 				setVotedData(responseData);
+				setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -259,15 +262,21 @@ export default function TerasikAdmin() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
-				<div className="container mx-auto">
-					{guruData.map((guru) => (
-						<div className="flex" key={guru.id}>
-							<div className="w-[72%]">{guru.nama_guru}</div>
-							<div className="">Suara: {guru.terasik}</div>
-						</div>
-					))}
-					<button onClick={handleBack}>Kembali</button>
-				</div>
+				{loading ? (
+					<div className="flex items-center justify-center h-screen">
+						<FaSpinner className="text-4xl animate-spin" />
+					</div>
+				) : (
+					<div className="container mx-auto max-[558px]:text-sm max-[500px]:text-[12px] max-[442px]:text-[10px] max-[390px]:text-[8px] max-[320px]:text-[6px]">
+						{guruData.map((guru) => (
+							<div className="flex" key={guru.id}>
+								<div className="max-[4000px]:w-[25%] max-[1200px]:w-[40%] max-[728px]:w-[80%]">{guru.nama_guru}</div>
+								<div className="">Suara: {guru.terasik}</div>
+							</div>
+						))}
+						<button onClick={handleBack}>Kembali</button>
+					</div>
+				)}
 			</Box>
 		</Box>
 	);

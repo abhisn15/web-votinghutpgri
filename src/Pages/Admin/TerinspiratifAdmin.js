@@ -17,13 +17,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { blue, cyan } from "@mui/material/colors";
 import {
-  AccountCircleOutlined,
+	AccountCircleOutlined,
 	ChevronLeft,
 	ChevronRight,
 	Dashboard as DashboardIcon,
 	Logout,
 } from "@mui/icons-material";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const drawerWidth = 240;
 
@@ -97,8 +98,8 @@ export default function TerinspiratifAdmin() {
 	const [votedData, setVotedData] = useState("");
 	const color = blue[500];
 	const colorCyan = cyan[900];
-  const [buttonColor, setButtonColor] = useState("");
-  const [loading, setLoading] = React.useState(true);
+	const [buttonColor, setButtonColor] = useState("");
+	const [loading, setLoading] = React.useState(true);
 
 	useEffect(() => {
 		setButtonColor(selectedOption ? "#2449EE" : "#B0B0B0");
@@ -117,6 +118,7 @@ export default function TerinspiratifAdmin() {
 			try {
 				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.guru;
+				setLoading(false);
 				setGuruData(responseData);
 			} catch (error) {
 				console.error(error);
@@ -132,6 +134,7 @@ export default function TerinspiratifAdmin() {
 				const response = await axios.get(process.env.REACT_APP_API_GURU);
 				const responseData = response.data.hasVotedTerinspiratif;
 				setVotedData(responseData);
+				setLoading(false);
 			} catch (error) {
 				console.error(error);
 			}
@@ -167,11 +170,11 @@ export default function TerinspiratifAdmin() {
 	const formSubmit = (event) => {
 		event.preventDefault();
 		// Handle form submission
-  };
-  
-  	const handleAkun = () => {
-			navigate("/akun-terdaftar");
-		};
+	};
+
+	const handleAkun = () => {
+		navigate("/akun-terdaftar");
+	};
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -257,15 +260,23 @@ export default function TerinspiratifAdmin() {
 			</Drawer>
 			<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 				<DrawerHeader />
-				<div className="container mx-auto">
-					{guruData.map((guru) => (
-						<div className="flex" key={guru.id}>
-							<div className="w-[72%]">{guru.nama_guru}</div>
-							<div className="">Suara: {guru.terinspiratif}</div>
-						</div>
-					))}
-					<button onClick={handleBack}>Kembali</button>
-				</div>
+				{loading ? (
+					<div className="flex items-center justify-center h-screen">
+						<FaSpinner className="text-4xl animate-spin" />
+					</div>
+				) : (
+					<div className="container mx-auto max-[558px]:text-sm max-[500px]:text-[12px] max-[442px]:text-[10px] max-[390px]:text-[8px] max-[320px]:text-[6px]">
+						{guruData.map((guru) => (
+							<div className="flex" key={guru.id}>
+								<div className="max-[4000px]:w-[25%] max-[1200px]:w-[40%] max-[728px]:w-[80%]">
+									{guru.nama_guru}
+								</div>
+								<div className="">Suara: {guru.terinspiratif}</div>
+							</div>
+						))}
+						<button onClick={handleBack}>Kembali</button>
+					</div>
+				)}
 			</Box>
 		</Box>
 	);

@@ -244,14 +244,14 @@ export default function Dashboard() {
 
 				<div className="mb-10">
 					<h1 className="text-2xl font-[500] mb-4">Hallo, { username }</h1>
-					<h1 className="text-xl font-[400]">Selamat Datang Di Situ Kami, Ayoo voting gurumu sesuai kategori apa yang kamu vote!</h1>
+					<h1 className="text-xl font-[400]">Selamat Datang Di Situs Kami, Ayoo voting gurumu sesuai kategori apa yang kamu vote!</h1>
 				</div>
 				{loading ? (
 					<div className="flex items-center justify-center h-screen">
 						<FaSpinner className="text-4xl animate-spin" />
 					</div>
 				) : 
-				<div className="flex flex-wrap justify-center items-center gap-10">
+				<div className="flex flex-wrap justify-center items-center gap-10 max-[388px]:w-[240px] max-[358px]:w-[200px]">
 					{showCategory.map((item) => (
 						<Card key={item.id} sx={{ maxWidth: 270 }}>
 							<CardMedia

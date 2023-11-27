@@ -270,38 +270,38 @@ export default function DashboardAdmin() {
 				</div>
 				{loading ? (
 					<div className="flex items-center justify-center h-screen">
-            <FaSpinner className="text-4xl animate-spin" />
-          </div>
-				) : 
-				<div className="flex flex-wrap justify-center items-center gap-10">
-					{showCategory.map((item) => (
-						<Card key={item.id} sx={{ maxWidth: 270 }}>
-							<CardMedia
-								component="img"
-								alt={item.guru}
-								height="140"
-								image={item.img}
-								sx={{ height: 300 }}
-							/>
-							<CardContent>
-								<Typography gutterBottom variant="p" component="div">
-									{item.category}
-								</Typography>
-							</CardContent>
-							<div className="flex justify-center bg-slate-200">
-								<CardActions>
-									<Button
-										onClick={() => handleKategori(item.id)}
-										className="w-[400px]"
-										size="small">
-										Lihat Hasil Voting
-									</Button>
-								</CardActions>
-							</div>
-						</Card>
-					))}
-				</div>
-				}
+						<FaSpinner className="text-4xl animate-spin" />
+					</div>
+				) : (
+					<div className="flex flex-wrap justify-center items-center gap-10 max-[388px]:w-[240px] max-[358px]:w-[200px]">
+						{showCategory.map((item) => (
+							<Card key={item.id} sx={{ maxWidth: 270 }}>
+								<CardMedia
+									component="img"
+									alt={item.guru}
+									height="140"
+									image={item.img}
+									sx={{ height: 300 }}
+								/>
+								<CardContent>
+									<Typography gutterBottom variant="p" component="div">
+										{item.category}
+									</Typography>
+								</CardContent>
+								<div className="flex justify-center bg-slate-200">
+									<CardActions>
+										<Button
+											onClick={() => handleKategori(item.id)}
+											className="w-[400px]"
+											size="small">
+											Lihat Hasil Voting
+										</Button>
+									</CardActions>
+								</div>
+							</Card>
+						))}
+					</div>
+				)}
 			</Box>
 		</Box>
 	);

@@ -39,7 +39,6 @@ export default function Login() {
 					password,
 				},
       );
-			
       
 			const responseData = response.data;
 			localStorage.setItem("token", responseData.authorization.token);
