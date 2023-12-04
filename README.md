@@ -1,3 +1,3 @@
 Well Damnn vroh Projecct sendiri untuk membuat vote event hari guru dengan saya ketua pelaksananya saya membuat aplikasi ini guna membantu dalam memilih
 pemenang guru dari masing masing kategori dengan guru yang berjumlah 44 guru, dan saya membuat dalam kurun waktu 2 hari Choyy.....
-dan untuk link websitenya adalah ini (https://web-votinghutpgri.cloufee.com[https://web-votinghutpgri.cloufee.com])
+dan untuk link websitenya adalah ini [https://web-votinghutpgri.cloufee.com]
