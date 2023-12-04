@@ -1,2 +1,2 @@
-Well DAmnn vroh Projecct sendiri untuk membuat vote event hari guru dengan saya ketua pelaksananya saya membuat aplikasi ini guna membantu dalam memilih
+Well Damnn vroh Projecct sendiri untuk membuat vote event hari guru dengan saya ketua pelaksananya saya membuat aplikasi ini guna membantu dalam memilih
 pemenang guru dari masing masing kategori dengan guru yang berjumlah 44 guru, dan saya membuat dalam kurun waktu 2 hari Choyy.....
