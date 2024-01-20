@@ -116,7 +116,17 @@ export default function Dashboard() {
 		if (!isUser) {
 			navigate("/", { replace: true });
 		}
+
+		window.addEventListener("storage", handleStorageChange);
+		return () => {
+			// Remove the event listener when the component unmounts
+			window.removeEventListener("storage", handleStorageChange);
+		};
 	}, [navigate]);
+
+	const handleStorageChange = () => {
+		navigate('/', {replace: true})
+	};
 
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(false);
@@ -168,6 +178,8 @@ export default function Dashboard() {
 	const handleLogout = () => {
 		navigate("/login", { replace: true });
 	};
+
+	
 
 	return (
 		<Box sx={{ display: "flex" }}>

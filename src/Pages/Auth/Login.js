@@ -56,7 +56,7 @@ export default function Login() {
 				"hasVotedTerinspiratif",
 				responseData.user.hasVotedTerinspiratif,
 			);
-
+			
 			if (responseData.authorization && responseData.authorization.token) {
 
 				if (responseData.user.role === "0") {

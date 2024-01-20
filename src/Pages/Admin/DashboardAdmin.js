@@ -131,7 +131,7 @@ export default function DashboardAdmin() {
 	React.useEffect(() => {
 		const isAdmin = localStorage.getItem("isAdmin") === "true";
 		if (!isAdmin) {
-			navigate("/", { replace: true });
+			navigate("/login", { replace: true });
 		}
 	}, [navigate]);
 
